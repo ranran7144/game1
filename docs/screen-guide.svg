@@ -1,77 +1,148 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="980" height="520" viewBox="0 0 980 520" role="img" aria-labelledby="title desc">
-  <title id="title">闇豚の塔 画面説明</title>
-  <desc id="desc">ゲーム画面の左、中央、右の役割を説明する図</desc>
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="920" viewBox="0 0 1200 920" role="img" aria-labelledby="title desc">
+  <title id="title">闇豚の塔 実画面に近い画面説明</title>
+  <desc id="desc">左に進行パネル、右上にパーティパネル、下に戦闘・街画面があるゲーム画面の説明図</desc>
   <defs>
-    <linearGradient id="panel" x1="0" x2="0" y1="0" y2="1">
-      <stop offset="0" stop-color="#2028aa"/>
-      <stop offset="0.55" stop-color="#111a82"/>
-      <stop offset="1" stop-color="#08104f"/>
-    </linearGradient>
     <style>
-      .bg { fill: #030617; }
-      .panel { fill: url(#panel); stroke: #f8f7ff; stroke-width: 4; }
-      .soft { fill: #0a1255; stroke: #95a8ff; stroke-width: 2; }
+      .bg { fill: #050816; }
+      .panel { fill: #182291; stroke: #f4f2ff; stroke-width: 4; }
+      .panel-dark { fill: #080d50; stroke: #f4f2ff; stroke-width: 4; }
+      .inner { fill: #101766; stroke: #a9b9ff; stroke-width: 3; }
+      .card { fill: #111a82; stroke: #b7c4ff; stroke-width: 3; }
+      .active { fill: url(#activeGrad); stroke: #fff0a8; stroke-width: 4; }
+      .button { fill: #17228f; stroke: #f4f2ff; stroke-width: 3; }
+      .meter { fill: #101766; stroke: #0b0d28; stroke-width: 3; }
+      .meter-line { stroke: #2b315f; stroke-width: 2; }
+      .meter-fill { fill: #ffd66b; }
       .title { fill: #fff0a8; font: 700 24px sans-serif; }
       .label { fill: #fff0a8; font: 700 18px sans-serif; }
-      .text { fill: #f8f7ff; font: 15px sans-serif; }
-      .small { fill: #bfc8ff; font: 13px sans-serif; }
-      .button { fill: #17228f; stroke: #f8f7ff; stroke-width: 2; }
+      .text { fill: #ffffff; font: 16px sans-serif; }
+      .small { fill: #dbe2ff; font: 13px sans-serif; }
+      .tiny { fill: #ffffff; font: 11px sans-serif; }
+      .muted { fill: #aeb8ea; font: 15px sans-serif; }
       .arrow { stroke: #79e2ff; stroke-width: 4; marker-end: url(#arrowhead); }
+      .note { fill: #030617; stroke: #79e2ff; stroke-width: 2; }
     </style>
+    <linearGradient id="activeGrad" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#ffe67d"/>
+      <stop offset="1" stop-color="#e47a1c"/>
+    </linearGradient>
     <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
       <path d="M0,0 L0,6 L9,3 z" fill="#79e2ff"/>
     </marker>
   </defs>
 
-  <rect class="bg" width="980" height="520"/>
-  <text class="title" x="32" y="42">闇豚の塔: 画面の見方</text>
+  <rect class="bg" width="1200" height="920"/>
 
-  <rect class="panel" x="28" y="70" width="210" height="390" rx="6"/>
-  <text class="label" x="48" y="105">左: 進行パネル</text>
-  <rect class="soft" x="48" y="125" width="170" height="54" rx="4"/>
-  <text class="text" x="64" y="148">第◯T / 内政</text>
-  <text class="small" x="64" y="168">現在のターンとフェーズ</text>
-  <rect class="soft" x="48" y="198" width="56" height="160" rx="4"/>
-  <rect fill="#79e2ff" x="62" y="298" width="28" height="48"/>
-  <text class="small" x="118" y="260">塔の進行度</text>
-  <rect class="button" x="48" y="378" width="76" height="34" rx="3"/>
-  <text class="small" x="65" y="400">探索へ</text>
-  <rect class="button" x="140" y="378" width="78" height="34" rx="3"/>
-  <text class="small" x="158" y="400">建築</text>
-  <text class="small" x="48" y="435">移動、帰還、イベント処理</text>
+  <rect class="panel-dark" x="8" y="8" width="283" height="405"/>
+  <text class="label" x="28" y="70">進行</text>
+  <text class="title" x="72" y="48">初めの塔 1/10</text>
+  <text class="title" x="72" y="76">階</text>
+  <rect class="meter" x="30" y="100" width="240" height="214"/>
+  <g>
+    <line class="meter-line" x1="31" y1="117" x2="269" y2="117"/>
+    <line class="meter-line" x1="31" y1="135" x2="269" y2="135"/>
+    <line class="meter-line" x1="31" y1="153" x2="269" y2="153"/>
+    <line class="meter-line" x1="31" y1="171" x2="269" y2="171"/>
+    <line class="meter-line" x1="31" y1="189" x2="269" y2="189"/>
+    <line class="meter-line" x1="31" y1="207" x2="269" y2="207"/>
+    <line class="meter-line" x1="31" y1="225" x2="269" y2="225"/>
+    <line class="meter-line" x1="31" y1="243" x2="269" y2="243"/>
+    <line class="meter-line" x1="31" y1="261" x2="269" y2="261"/>
+    <line class="meter-line" x1="31" y1="279" x2="269" y2="279"/>
+  </g>
+  <rect class="meter-fill" x="31" y="294" width="238" height="18"/>
+  <rect class="button" x="30" y="336" width="114" height="36"/>
+  <text class="small" x="60" y="360">探索中</text>
+  <rect class="button" x="156" y="336" width="114" height="36"/>
+  <text class="small" x="186" y="360">戦闘中</text>
 
-  <rect class="panel" x="270" y="70" width="330" height="390" rx="6"/>
-  <text class="label" x="292" y="105">中央: パーティパネル</text>
-  <rect class="soft" x="292" y="126" width="286" height="110" rx="4"/>
-  <text class="text" x="312" y="154">前衛</text>
-  <circle fill="#fff0a8" cx="386" cy="154" r="18"/>
-  <circle fill="#f8f7ff" cx="454" cy="154" r="18"/>
-  <text class="small" x="312" y="196">HP / AP / 行動ボタン</text>
-  <rect class="soft" x="292" y="258" width="286" height="110" rx="4"/>
-  <text class="text" x="312" y="286">後衛</text>
-  <circle fill="#79e2ff" cx="386" cy="286" r="18"/>
-  <circle fill="#bfc8ff" cx="454" cy="286" r="18"/>
-  <text class="small" x="312" y="328">回復、魔法、遠距離攻撃</text>
-  <rect class="button" x="292" y="392" width="78" height="34" rx="3"/>
-  <text class="small" x="314" y="414">編成</text>
-  <rect class="button" x="386" y="392" width="78" height="34" rx="3"/>
-  <text class="small" x="408" y="414">道具</text>
-  <rect class="button" x="480" y="392" width="78" height="34" rx="3"/>
-  <text class="small" x="502" y="414">BGM</text>
+  <rect class="panel-dark" x="308" y="8" width="884" height="405"/>
+  <text class="label" x="328" y="44">前衛2 / 後衛0 / 仲間2人</text>
+  <rect class="button" x="690" y="24" width="54" height="32"/>
+  <text class="tiny" x="705" y="44">編成</text>
+  <rect class="button" x="756" y="24" width="70" height="32" opacity="0.45"/>
+  <text class="tiny" x="772" y="44">道具 0</text>
+  <rect class="button" x="834" y="24" width="100" height="32" opacity="0.45"/>
+  <text class="tiny" x="850" y="44">ステータス</text>
+  <rect class="button" x="944" y="24" width="70" height="32" opacity="0.45"/>
+  <text class="tiny" x="961" y="44">セーブ</text>
+  <rect class="button" x="1024" y="24" width="70" height="32"/>
+  <text class="tiny" x="1044" y="44">ロード</text>
+  <rect class="button" x="1104" y="24" width="70" height="32"/>
+  <text class="tiny" x="1123" y="44">BGM 0</text>
 
-  <rect class="panel" x="632" y="70" width="320" height="390" rx="6"/>
-  <text class="label" x="654" y="105">右: メイン画面</text>
-  <rect class="soft" x="654" y="126" width="276" height="112" rx="4"/>
-  <text class="text" x="674" y="156">街 / 探索先 / 敵</text>
-  <text class="small" x="674" y="184">状況に応じて内容が変化</text>
-  <rect class="soft" x="654" y="258" width="276" height="82" rx="4"/>
-  <text class="text" x="674" y="288">戦闘コマンド</text>
-  <text class="small" x="674" y="316">攻撃、魔法、回復、待機</text>
-  <rect class="soft" x="654" y="362" width="276" height="66" rx="4"/>
-  <text class="text" x="674" y="390">ログ</text>
-  <text class="small" x="674" y="414">勝利、報酬、レベルアップ</text>
+  <text class="label" x="328" y="80">前衛</text>
+  <rect class="active" x="328" y="90" width="272" height="136"/>
+  <rect fill="#4a2e18" x="340" y="104" width="64" height="64"/>
+  <circle fill="#d08a32" cx="372" cy="136" r="27"/>
+  <text class="text" x="416" y="139">アルス</text>
+  <text class="small" x="496" y="139">Lv 1 / 射程 1</text>
+  <text class="tiny" x="340" y="188">HP 34/34</text>
+  <text class="tiny" x="340" y="208">AP 10/10</text>
+  <rect class="button" x="498" y="182" width="40" height="28"/>
+  <text class="tiny" x="506" y="201">待機</text>
+  <rect class="button" x="544" y="182" width="40" height="28"/>
+  <text class="tiny" x="552" y="201">回復</text>
 
-  <line class="arrow" x1="232" y1="480" x2="270" y2="480"/>
-  <line class="arrow" x1="600" y1="480" x2="632" y2="480"/>
-  <text class="small" x="344" y="486">内政で準備 → 探索 → 戦闘 → イベント</text>
+  <rect class="card" x="612" y="90" width="270" height="136"/>
+  <rect fill="#2f251c" x="624" y="104" width="64" height="64"/>
+  <circle fill="#8b5a2c" cx="656" cy="136" r="27"/>
+  <text class="text" x="696" y="139">ガロン</text>
+  <text class="small" x="776" y="139">Lv 1 / 射程 1</text>
+  <text class="tiny" x="624" y="188">HP 33/42</text>
+  <text class="tiny" x="624" y="208">AP 10/10</text>
+  <rect class="button" x="780" y="182" width="42" height="28"/>
+  <text class="tiny" x="790" y="201">回復</text>
+
+  <text class="label" x="328" y="254">後衛</text>
+  <rect class="inner" x="328" y="262" width="272" height="110"/>
+  <text class="muted" x="447" y="326">空き</text>
+  <text class="small" x="1094" y="392">音楽: 魔王魂</text>
+
+  <rect class="panel" x="8" y="428" width="1184" height="484"/>
+  <text class="label" x="28" y="466">戦闘中</text>
+  <text class="small" x="1048" y="466">0 G / 内政P 4</text>
+  <text class="label" x="28" y="496">前列</text>
+
+  <rect class="card" x="28" y="498" width="370" height="170"/>
+  <circle fill="#6ecc44" cx="68" cy="536" r="20"/>
+  <text class="text" x="100" y="543">スライム</text>
+  <text class="label" x="370" y="543">敵</text>
+  <text class="tiny" x="40" y="584">HP 10/10 / 物防 1 / 魔防 1</text>
+  <text class="tiny" x="40" y="612">射程 1 / 敏捷 5</text>
+  <rect class="button" x="42" y="624" width="106" height="32"/>
+  <text class="small" x="80" y="645">攻撃</text>
+  <rect class="button" x="160" y="624" width="106" height="32"/>
+  <text class="small" x="198" y="645">魔法</text>
+  <rect class="button" x="278" y="624" width="108" height="32"/>
+  <text class="small" x="316" y="645">待機</text>
+
+  <rect class="card" x="410" y="498" width="372" height="170"/>
+  <path fill="#0c1022" d="M432 530 l22 -8 l22 8 l-12 22 l-20 0 z"/>
+  <text class="text" x="484" y="543">こうもり</text>
+  <text class="label" x="754" y="543">済</text>
+  <text class="tiny" x="422" y="584">HP 12/12 / 物防 2 / 魔防 1</text>
+  <text class="tiny" x="422" y="612">射程 2 / 敏捷 11</text>
+  <rect class="button" x="424" y="624" width="106" height="32"/>
+  <text class="small" x="462" y="645">攻撃</text>
+  <rect class="button" x="542" y="624" width="106" height="32"/>
+  <text class="small" x="580" y="645">魔法</text>
+  <rect class="button" x="660" y="624" width="108" height="32"/>
+  <text class="small" x="698" y="645">待機</text>
+
+  <rect class="card" x="794" y="498" width="372" height="170"/>
+  <text class="muted" x="966" y="588">空き</text>
+
+  <rect class="inner" x="28" y="746" width="1138" height="148"/>
+  <text class="small" x="44" y="780">こうもりの攻撃。ガロンに9ダメージ。</text>
+  <text class="small" x="44" y="808">敏捷順の行動順が決まった。</text>
+  <text class="small" x="44" y="836">魔物があらわれた！</text>
+  <text class="small" x="44" y="864">初めの塔1階へ登った。</text>
+
+  <rect class="note" x="28" y="690" width="312" height="36"/>
+  <text class="small" x="42" y="713">敵カード: 攻撃対象を選ぶ場所</text>
+  <line class="arrow" x1="340" y1="708" x2="410" y2="628"/>
+  <rect class="note" x="674" y="690" width="302" height="36"/>
+  <text class="small" x="688" y="713">ログ: 結果や報酬を確認</text>
+  <line class="arrow" x1="820" y1="727" x2="810" y2="746"/>
 </svg>
