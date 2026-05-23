@@ -818,16 +818,16 @@ button:disabled {
   min-width: 620px;
   border-collapse: collapse;
   table-layout: fixed;
-  font-size: 13px;
+  font-size: 12px;
 }
 
 .item-target-table th,
 .item-target-table td {
-  padding: 4px 6px;
+  padding: 2px 4px;
   border-bottom: 2px solid rgba(248, 247, 255, 0.5);
   text-align: left;
   vertical-align: middle;
-  line-height: 1.15;
+  line-height: 1;
 }
 
 .item-target-table th {
@@ -853,8 +853,9 @@ button:disabled {
 
 .item-target-table button {
   width: 100%;
-  min-height: 24px;
-  font-size: 12px;
+  min-height: 18px;
+  padding: 0 4px;
+  font-size: 11px;
 }
 
 .shop-content {
