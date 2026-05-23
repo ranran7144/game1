@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>闇豚の塔</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <section id="openingScreen" class="opening-screen" aria-label="オープニング">
+    <div class="opening-window">
+      <div class="opening-title">闇豚の塔</div>
+      <div class="opening-lines">
+        <p>とある地方に、天をつく十の塔があった。</p>
+        <p>塔はいつしか、闇豚らんらんの力にのみこまれ、夜より暗い影を落とした。</p>
+        <p>村はしずみ、道は閉ざされ、人々は塔を見上げることしかできなくなった。</p>
+        <p>けれど、まだ剣を取る者たちがいる。</p>
+        <p>仲間を集め、街を整え、闇豚の塔へ挑め。</p>
+      </div>
+      <div class="opening-difficulty" aria-label="難易度選択">
+        <div class="opening-difficulty-title">難易度を選ぶ</div>
+        <div class="opening-difficulty-actions">
+          <button class="opening-difficulty-btn selected" type="button" data-opening-difficulty="normal" aria-pressed="true">ノーマル</button>
+          <button class="opening-difficulty-btn" type="button" data-opening-difficulty="hard" aria-pressed="false">ハード</button>
+        </div>
+        <p class="opening-difficulty-note">ハードではHP0の仲間が戦闘後も倒れたままになります。</p>
+      </div>
+      <button id="openingStartBtn" class="opening-start" type="button">たびをはじめる</button>
+    </div>
+  </section>
+
+  <main class="game-shell">
+    <section class="dungeon-panel" aria-label="進行">
+      <div class="floor-readout">
+        <span class="label">進行</span>
+        <strong id="locationName">第1T 内政</strong>
+      </div>
+      <div class="tower-gauge" aria-hidden="true">
+        <div id="towerProgress" class="tower-progress"></div>
+      </div>
+      <div id="travelActions" class="travel-actions"></div>
+    </section>
+
+    <section class="party-panel" aria-label="パーティー">
+      <div class="panel-title">
+        <h1 id="partyTitle">2人パーティー</h1>
+        <div class="panel-actions">
+          <button id="formationBtn" class="small-btn" type="button">編成</button>
+          <button id="itemsBtn" class="small-btn" type="button">道具 0</button>
+          <button id="statusBtn" class="small-btn" type="button">ステータス</button>
+          <button id="saveBtn" class="small-btn" type="button">セーブ</button>
+          <button id="loadBtn" class="small-btn" type="button">ロード</button>
+          <button id="bgmBtn" class="small-btn" type="button">BGM 0</button>
+        </div>
+      </div>
+      <div id="party" class="party-grid"></div>
+      <p class="music-credit">音楽：魔王魂</p>
+    </section>
+
+    <section class="battle-panel" aria-label="メイン画面">
+      <div class="battle-header">
+        <h2 id="battleTitle">探索中</h2>
+        <span id="gold" class="gold">0 G</span>
+      </div>
+      <div id="enemyArea" class="enemy-area"></div>
+      <div id="commandArea" class="command-area"></div>
+      <div id="log" class="log" aria-live="polite"></div>
+    </section>
+  </main>
+
+  <dialog id="statusDialog" class="status-dialog">
+    <div class="dialog-header">
+      <h2>ステータス</h2>
+      <button id="closeStatusBtn" class="small-btn" type="button">閉じる</button>
+    </div>
+    <div id="statusContent" class="status-content"></div>
+  </dialog>
+
+  <dialog id="formationDialog" class="status-dialog formation-dialog">
+    <div class="dialog-header">
+      <h2>パーティー編成</h2>
+      <button id="closeFormationBtn" class="small-btn" type="button">閉じる</button>
+    </div>
+    <div id="formationContent" class="formation-content"></div>
+  </dialog>
+
+  <dialog id="itemsDialog" class="status-dialog items-dialog">
+    <div class="dialog-header">
+      <h2>道具</h2>
+      <button id="closeItemsBtn" class="small-btn" type="button">閉じる</button>
+    </div>
+    <div id="itemsContent" class="items-content"></div>
+  </dialog>
+
+  <dialog id="shopDialog" class="status-dialog shop-dialog">
+    <div class="dialog-header">
+      <h2>武器防具屋</h2>
+      <div class="shop-dialog-actions">
+        <span id="shopGold" class="gold">0 G</span>
+        <button id="closeShopBtn" class="small-btn" type="button">閉じる</button>
+      </div>
+    </div>
+    <div id="shopContent" class="shop-content"></div>
+  </dialog>
+
+  <script src="characters.js"></script>
+  <script src="game.js"></script>
+</body>
+</html>

@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>二つの塔</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="game-shell">
+    <section class="dungeon-panel" aria-label="進行">
+      <div class="floor-readout">
+        <span class="label">進行</span>
+        <strong id="locationName">第1T 内政</strong>
+      </div>
+      <div class="tower-gauge" aria-hidden="true">
+        <div id="towerProgress" class="tower-progress"></div>
+      </div>
+      <div id="travelActions" class="travel-actions"></div>
+    </section>
+
+    <section class="party-panel" aria-label="パーティー">
+      <div class="panel-title">
+        <h1 id="partyTitle">2人パーティー</h1>
+        <div class="panel-actions">
+          <button id="formationBtn" class="small-btn" type="button">編成</button>
+          <button id="statusBtn" class="small-btn" type="button">ステータス</button>
+          <button id="saveBtn" class="small-btn" type="button">セーブ</button>
+          <button id="loadBtn" class="small-btn" type="button">ロード</button>
+          <button id="bgmBtn" class="small-btn" type="button">BGM 0</button>
+        </div>
+      </div>
+      <div id="party" class="party-grid"></div>
+      <p class="music-credit">音楽：魔王魂</p>
+    </section>
+
+    <section class="battle-panel" aria-label="メイン画面">
+      <div class="battle-header">
+        <h2 id="battleTitle">探索中</h2>
+        <span id="gold" class="gold">0 G</span>
+      </div>
+      <div id="enemyArea" class="enemy-area"></div>
+      <div id="commandArea" class="command-area"></div>
+      <div id="log" class="log" aria-live="polite"></div>
+    </section>
+  </main>
+
+  <dialog id="statusDialog" class="status-dialog">
+    <div class="dialog-header">
+      <h2>ステータス</h2>
+      <button id="closeStatusBtn" class="small-btn" type="button">閉じる</button>
+    </div>
+    <div id="statusContent" class="status-content"></div>
+  </dialog>
+
+  <dialog id="formationDialog" class="status-dialog formation-dialog">
+    <div class="dialog-header">
+      <h2>パーティー編成</h2>
+      <button id="closeFormationBtn" class="small-btn" type="button">閉じる</button>
+    </div>
+    <div id="formationContent" class="formation-content"></div>
+  </dialog>
+
+  <script src="characters.js"></script>
+  <script src="game.js"></script>
+</body>
+</html>
