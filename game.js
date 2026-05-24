@@ -513,6 +513,7 @@ function updateOpeningDifficultyButtons() {
 function closeOpening() {
   addLog(`難易度: ${difficultyLabel()}で開始。`);
   els.openingScreen?.classList.add("hidden");
+  render();
 }
 
 function difficultyLabel() {
@@ -2373,6 +2374,15 @@ function renderHelp() {
     </section>
 
     <section class="help-section">
+      <h3>画面の見方</h3>
+      <ul>
+        <li>左は進行。ターン、塔の階層、探索や帰還ボタンを見る。</li>
+        <li>上は仲間。前衛、後衛、HP、AP、行動ボタンを見る。</li>
+        <li>下はメイン画面。街、敵、コマンド、戦闘ログを見る。</li>
+      </ul>
+    </section>
+
+    <section class="help-section">
       <h3>ターンの流れ</h3>
       <ol>
         <li>内政ターンで酒場、建築、装備、編成を整える。</li>
@@ -2388,6 +2398,17 @@ function renderHelp() {
         <li>建築: 酒場やギルドを増やし、仲間候補や探索補助を増やす。</li>
         <li>武器防具屋: ゴールドで全員の装備を強化する。</li>
         <li>編成: 前衛と後衛に最大3人ずつ配置する。</li>
+      </ul>
+    </section>
+
+    <section class="help-section">
+      <h3>ステータス画面</h3>
+      <ul>
+        <li>戦闘中以外に開ける。仲間全員の能力を一覧できる。</li>
+        <li>HPは体力、APは魔法や回復や特殊行動で使う力。</li>
+        <li>配置と射程を見ると、前衛向きか後衛向きか判断しやすい。</li>
+        <li>属性は物理、魔法、両方。敵の防御との相性に関係する。</li>
+        <li>敏捷は行動順、内政は内政P、経験値は次のLvまでの目安。</li>
       </ul>
     </section>
 
