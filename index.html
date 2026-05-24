@@ -25,6 +25,7 @@
         </div>
         <p class="opening-difficulty-note">ハードではHP0の仲間が戦闘後も倒れたままになります。</p>
       </div>
+      <button id="openingHelpBtn" class="opening-help" type="button">遊び方</button>
       <button id="openingStartBtn" class="opening-start" type="button">たびをはじめる</button>
     </div>
   </section>
@@ -51,6 +52,7 @@
           <button id="saveBtn" class="small-btn" type="button">セーブ</button>
           <button id="loadBtn" class="small-btn" type="button">ロード</button>
           <button id="bgmBtn" class="small-btn" type="button">BGM 0</button>
+          <button id="helpBtn" class="small-btn" type="button">遊び方</button>
         </div>
       </div>
       <div id="party" class="party-grid"></div>
@@ -101,6 +103,14 @@
       </div>
     </div>
     <div id="shopContent" class="shop-content"></div>
+  </dialog>
+
+  <dialog id="helpDialog" class="status-dialog help-dialog">
+    <div class="dialog-header">
+      <h2>遊び方</h2>
+      <button id="closeHelpBtn" class="small-btn" type="button">閉じる</button>
+    </div>
+    <div id="helpContent" class="help-content"></div>
   </dialog>
 
   <script src="characters.js"></script>

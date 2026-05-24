@@ -267,6 +267,7 @@ normalizeCombatStats(state.reserveMembers);
 const els = {
   openingScreen: document.querySelector("#openingScreen"),
   openingStartBtn: document.querySelector("#openingStartBtn"),
+  openingHelpBtn: document.querySelector("#openingHelpBtn"),
   openingDifficultyButtons: document.querySelectorAll("[data-opening-difficulty]"),
   locationName: document.querySelector("#locationName"),
   towerProgress: document.querySelector("#towerProgress"),
@@ -277,19 +278,23 @@ const els = {
   saveBtn: document.querySelector("#saveBtn"),
   loadBtn: document.querySelector("#loadBtn"),
   bgmBtn: document.querySelector("#bgmBtn"),
+  helpBtn: document.querySelector("#helpBtn"),
   partyTitle: document.querySelector("#partyTitle"),
   closeStatusBtn: document.querySelector("#closeStatusBtn"),
   closeFormationBtn: document.querySelector("#closeFormationBtn"),
   closeItemsBtn: document.querySelector("#closeItemsBtn"),
   closeShopBtn: document.querySelector("#closeShopBtn"),
+  closeHelpBtn: document.querySelector("#closeHelpBtn"),
   statusDialog: document.querySelector("#statusDialog"),
   formationDialog: document.querySelector("#formationDialog"),
   itemsDialog: document.querySelector("#itemsDialog"),
   shopDialog: document.querySelector("#shopDialog"),
+  helpDialog: document.querySelector("#helpDialog"),
   statusContent: document.querySelector("#statusContent"),
   formationContent: document.querySelector("#formationContent"),
   itemsContent: document.querySelector("#itemsContent"),
   shopContent: document.querySelector("#shopContent"),
+  helpContent: document.querySelector("#helpContent"),
   shopGold: document.querySelector("#shopGold"),
   party: document.querySelector("#party"),
   battleTitle: document.querySelector("#battleTitle"),
@@ -301,6 +306,7 @@ const els = {
 
 els.statusBtn.addEventListener("click", openStatus);
 els.openingStartBtn?.addEventListener("click", closeOpening);
+els.openingHelpBtn?.addEventListener("click", openHelp);
 els.openingDifficultyButtons.forEach((button) => {
   button.addEventListener("click", () => selectOpeningDifficulty(button.dataset.openingDifficulty));
 });
@@ -310,6 +316,8 @@ els.closeFormationBtn.addEventListener("click", () => els.formationDialog.close(
 els.itemsBtn.addEventListener("click", openItems);
 els.closeItemsBtn.addEventListener("click", () => els.itemsDialog.close());
 els.closeShopBtn.addEventListener("click", () => els.shopDialog.close());
+els.helpBtn.addEventListener("click", openHelp);
+els.closeHelpBtn.addEventListener("click", () => els.helpDialog.close());
 els.saveBtn.addEventListener("click", openSaveSlots);
 els.loadBtn.addEventListener("click", openLoadSlots);
 els.bgmBtn.addEventListener("click", toggleBgm);
@@ -2350,6 +2358,69 @@ function openItems() {
 function openFormation() {
   renderFormation();
   els.formationDialog.showModal();
+}
+
+function openHelp() {
+  renderHelp();
+  els.helpDialog.showModal();
+}
+
+function renderHelp() {
+  els.helpContent.innerHTML = `
+    <section class="help-section">
+      <h3>目的</h3>
+      <p>内政で仲間と装備を整え、塔を登って最上階のボスを倒す。十の塔を踏破し、最後に闇豚らんらんを倒せばクリア。</p>
+    </section>
+
+    <section class="help-section">
+      <h3>ターンの流れ</h3>
+      <ol>
+        <li>内政ターンで酒場、建築、装備、編成を整える。</li>
+        <li>探索へ出て、塔を登る。帰るまで探索ターンは続く。</li>
+        <li>探索を終えるとイベントが起き、次の内政ターンへ進む。</li>
+      </ol>
+    </section>
+
+    <section class="help-section">
+      <h3>内政でできること</h3>
+      <ul>
+        <li>酒場: 内政Pを使って仲間を増やす。</li>
+        <li>建築: 酒場やギルドを増やし、仲間候補や探索補助を増やす。</li>
+        <li>武器防具屋: ゴールドで全員の装備を強化する。</li>
+        <li>編成: 前衛と後衛に最大3人ずつ配置する。</li>
+      </ul>
+    </section>
+
+    <section class="help-section">
+      <h3>戦闘の基本</h3>
+      <ul>
+        <li>敏捷が高いほど先に行動しやすい。</li>
+        <li>射程1は前衛向き、射程2以上は後衛からも攻撃しやすい。</li>
+        <li>APは魔法、回復、特殊行動で使う。待機すると消費せずにターンを進める。</li>
+        <li>敵の前衛が残っていると、後衛へ届きにくい攻撃がある。</li>
+      </ul>
+    </section>
+
+    <section class="help-section">
+      <h3>仲間と役割</h3>
+      <ul>
+        <li>戦士や騎士は前衛で受ける役。</li>
+        <li>魔法使いは後衛から魔法で複数の敵を狙う役。</li>
+        <li>僧侶は回復役。勇者も攻撃と回復を両方こなせる。</li>
+        <li>狩人、罠師、盗賊、忍者、商人、内政官は建築で増える仲間。</li>
+      </ul>
+    </section>
+
+    <section class="help-section">
+      <h3>強くなる方法</h3>
+      <ul>
+        <li>塔で戦うと経験値とゴールドを得る。</li>
+        <li>装備をまとめて強化すると、次の塔を突破しやすくなる。</li>
+        <li>種や実は道具から使える。足りない能力を補うのに便利。</li>
+        <li>倒れやすい時は編成、装備、帰るタイミングを見直す。</li>
+      </ul>
+    </section>
+  `;
 }
 
 function removeFromFormation(memberIndex) {
