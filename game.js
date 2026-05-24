@@ -248,6 +248,7 @@ const state = {
   ending: null,
   enemies: [],
   pendingDamageEffects: [],
+  pendingSubstitutionEffects: [],
   items: createEmptyGrowthInventory(),
   members: startingMembers.map((member) => ({ ...member })),
   formation: {
@@ -534,6 +535,7 @@ function completeGame() {
   state.clearedFloor = TOTAL_FLOORS;
   state.enemies = [];
   state.pendingDamageEffects = [];
+  state.pendingSubstitutionEffects = [];
   state.ending = {
     clearTurn,
     difficulty: state.difficulty,
@@ -604,6 +606,7 @@ function restartWithClearBonus() {
   state.ending = null;
   state.enemies = [];
   state.pendingDamageEffects = [];
+  state.pendingSubstitutionEffects = [];
   state.items = createEmptyGrowthInventory();
   state.members = startingMembers.map((member) => resetMemberToLevelOne(member, true));
   state.reserveMembers = recruitableMembers.map((member) => resetMemberToLevelOne(member));
@@ -854,6 +857,7 @@ function autoSubstituteDefeatedMembersInRow(row) {
     return replacement;
   });
   syncPartyFromFormation();
+  state.pendingSubstitutionEffects.push(...pairs);
   pairs.forEach(({ defeated, replacement }) => {
     addLog(`${defeated.name}が倒れたため、控えの${replacement.name}が${rowLabel(row)}に入った。`);
   });
@@ -1368,6 +1372,7 @@ function startBattle(isBoss) {
   if (els.statusDialog.open) els.statusDialog.close();
   state.enemies = createEnemies(isBoss);
   state.pendingDamageEffects = [];
+  state.pendingSubstitutionEffects = [];
   state.actedThisRound = [];
   state.preemptiveRoundPending = Math.random() < preemptiveAttackRate();
   addLog(isBoss ? `${state.enemies[0]?.name || "最上階の主"}が立ちはだかった！` : "魔物があらわれた！");
@@ -1435,6 +1440,7 @@ function startDarkPigFinalBattle() {
   state.actionQueue = [];
   state.actedThisRound = [];
   state.pendingDamageEffects = [];
+  state.pendingSubstitutionEffects = [];
   state.preemptiveRoundPending = false;
   state.enemies = createDarkPigFinalBattleEnemies();
   addLog("天塔竜が崩れ落ちた。だが、塔の闇はまだ晴れない。");
@@ -2596,6 +2602,7 @@ function applySavePayload(payload) {
   state.reserveMembers = cloneData(payload.reserveMembers || []);
   state.enemies = cloneData(payload.enemies || []);
   state.pendingDamageEffects = [];
+  state.pendingSubstitutionEffects = [];
   state.preemptiveRoundPending = false;
   state.items = {
     ...createEmptyGrowthInventory(),
@@ -2798,6 +2805,7 @@ function renderParty() {
     const targetIndex = button.dataset.ally === undefined ? undefined : Number(button.dataset.ally);
     button.addEventListener("click", () => performAction(button.dataset.partyAction, targetIndex));
   });
+  state.pendingSubstitutionEffects = [];
 }
 
 function renderPartyRow(label, members) {
@@ -2815,6 +2823,7 @@ function renderPartyMemberCard(member) {
     const index = memberIndex(member);
     const active = state.inBattle && state.activeActor?.type === "party" && state.activeActor.actor === member;
     const acted = state.inBattle && hasActedThisRound("party", member);
+    const substitutionEffect = state.pendingSubstitutionEffects.find((effect) => effect.replacement === member);
     const activeMember = state.activeActor?.type === "party" ? state.activeActor.actor : null;
     const isHealButtonTarget = activeMember && isGroupHeal(activeMember)
       ? member === activeMember
@@ -2831,23 +2840,47 @@ function renderPartyMemberCard(member) {
     ].filter(Boolean).join("");
     const actionAreaClass = memberActionButtons ? "member-actions" : "member-actions empty-actions";
     return `
-      <article class="member-card ${member.hp <= 0 ? "defeated" : ""} ${active ? "acting" : ""} ${acted ? "acted" : ""}" data-member-card="${index}">
-        <div class="name-line">
-          <span class="name-with-icon">${renderMemberSprite(member)}<span>${member.name}</span></span>
-          <span>${acted ? "済 / " : ""}Lv ${member.level} / 射程 ${attackRange(member)}</span>
-        </div>
-        <div class="member-card-body">
-          <div class="member-stats">
-            <div class="stat-line">HP ${member.hp}/${member.maxHp}</div>
-            <div class="stat-line">AP ${member.mp}/${member.maxMp}</div>
-            ${renderStatusBadges(member)}
+      <article class="member-card ${member.hp <= 0 ? "defeated" : ""} ${active ? "acting" : ""} ${acted ? "acted" : ""} ${substitutionEffect ? "substitution-incoming" : ""}" data-member-card="${index}">
+        <div class="member-card-content">
+          <div class="name-line">
+            <span class="name-with-icon">${renderMemberSprite(member)}<span>${member.name}</span></span>
+            <span>${acted ? "済 / " : ""}Lv ${member.level} / 射程 ${attackRange(member)}</span>
           </div>
-          <div class="${actionAreaClass}" ${memberActionButtons ? "" : `aria-hidden="true"`}>
-            ${memberActionButtons}
+          <div class="member-card-body">
+            <div class="member-stats">
+              <div class="stat-line">HP ${member.hp}/${member.maxHp}</div>
+              <div class="stat-line">AP ${member.mp}/${member.maxMp}</div>
+              ${renderStatusBadges(member)}
+            </div>
+            <div class="${actionAreaClass}" ${memberActionButtons ? "" : `aria-hidden="true"`}>
+              ${memberActionButtons}
+            </div>
           </div>
         </div>
+        ${renderSubstitutionGhost(substitutionEffect)}
       </article>
     `;
+}
+
+function renderSubstitutionGhost(effect) {
+  if (!effect) return "";
+
+  const defeated = effect.defeated;
+  return `
+    <div class="substitution-outgoing-ghost" aria-hidden="true">
+      <div class="name-line">
+        <span class="name-with-icon">${renderMemberSprite(defeated)}<span>${defeated.name}</span></span>
+        <span>HP 0</span>
+      </div>
+      <div class="substitution-ghost-body">
+        <div class="member-stats">
+          <div class="stat-line">HP 0/${defeated.maxHp}</div>
+          <div class="stat-line">AP ${defeated.mp}/${defeated.maxMp}</div>
+          ${renderStatusBadges(defeated)}
+        </div>
+      </div>
+    </div>
+  `;
 }
 
 function renderBattle() {

@@ -355,9 +355,52 @@ button:disabled {
     inset -2px -2px 0 rgba(0, 0, 0, 0.45);
 }
 
+.member-card-content {
+  position: relative;
+  z-index: 1;
+}
+
 .member-card.defeated,
 .enemy-card.defeated {
   opacity: 0.46;
+}
+
+.member-card.substitution-incoming .member-card-content {
+  animation: substitute-member-in 640ms cubic-bezier(0.17, 0.84, 0.44, 1) both;
+}
+
+.substitution-outgoing-ghost {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  box-sizing: border-box;
+  padding: 10px;
+  color: #d9ddff;
+  pointer-events: none;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.04), transparent 18px),
+    linear-gradient(180deg, rgba(8, 12, 58, 0.98), rgba(2, 4, 24, 0.98));
+  box-shadow:
+    inset 0 0 0 3px rgba(170, 178, 255, 0.5),
+    inset 0 0 30px rgba(0, 0, 0, 0.72);
+  text-shadow: 2px 2px 0 #000;
+  animation: substitute-member-out 640ms ease-in forwards;
+}
+
+.substitution-outgoing-ghost .character-portrait,
+.substitution-outgoing-ghost .pixel-icon {
+  filter: grayscale(0.45) brightness(0.58);
+}
+
+.member-card.acting .substitution-outgoing-ghost .name-line,
+.member-card.acting .substitution-outgoing-ghost .name-line > span:last-child,
+.member-card.acting .substitution-outgoing-ghost .stat-line {
+  color: #d9ddff;
+  text-shadow: 2px 2px 0 #000;
+}
+
+.substitution-ghost-body {
+  margin-top: 8px;
 }
 
 .enemy-card.attack-preview {
@@ -424,6 +467,39 @@ button:disabled {
   60% { transform: translateX(-4px); }
   80% { transform: translateX(4px); }
   100% { transform: translateX(0); }
+}
+
+@keyframes substitute-member-out {
+  0% {
+    opacity: 1;
+    filter: brightness(0.88);
+    transform: translateX(0);
+  }
+  24% {
+    opacity: 1;
+    filter: brightness(0.45);
+    transform: translateX(0);
+  }
+  100% {
+    opacity: 0;
+    filter: brightness(0.22);
+    transform: translateX(-46px);
+  }
+}
+
+@keyframes substitute-member-in {
+  0% {
+    opacity: 0;
+    transform: translateX(42px);
+  }
+  26% {
+    opacity: 0;
+    transform: translateX(42px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 
 @keyframes damage-popup {
