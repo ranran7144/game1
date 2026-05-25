@@ -1004,6 +1004,15 @@ function jobShortLabel(member) {
   return JOB_SHORT_LABELS[member?.job] || String(member?.job || "?").slice(0, 1);
 }
 
+function renderMemberMeta(member, details) {
+  return `
+    <span class="member-meta">
+      <span class="member-job-symbol">${jobShortLabel(member)}</span>
+      <span>${details}</span>
+    </span>
+  `;
+}
+
 function normalizeStatusEffects(actor) {
   if (!actor) return {};
   if (!actor.statusEffects || typeof actor.statusEffects !== "object" || Array.isArray(actor.statusEffects)) {
@@ -2500,12 +2509,102 @@ function placeFormationMember(memberIndex, row) {
   renderFormation();
 }
 
+function replaceFormationSlot(row, oldMember, newMember) {
+  const index = state.formation[row].indexOf(oldMember);
+  if (index < 0) return false;
+  state.formation[row][index] = newMember;
+  return true;
+}
+
+function finishFormationSwap(member, target) {
+  syncPartyFromFormation();
+  addLog(`${member.name}と${target.name}を入れ替えた。`);
+  normalizeActiveMember();
+  render();
+  renderFormation();
+}
+
+function swapFormationMembers(memberIndex, targetIndex) {
+  const member = state.members[memberIndex];
+  const target = state.members[targetIndex];
+  if (!member || !target || member === target) return;
+
+  const memberRow = getMemberRow(member);
+  const targetRow = getMemberRow(target);
+  if (!memberRow && !targetRow) return;
+
+  if (memberRow && targetRow) {
+    if (!canPlaceInRow(member, targetRow)) {
+      addLog(`${member.name}は${rowLabel(targetRow)}に配置できない。`);
+      renderFormation();
+      return;
+    }
+    if (!canPlaceInRow(target, memberRow)) {
+      addLog(`${target.name}は${rowLabel(memberRow)}に配置できない。`);
+      renderFormation();
+      return;
+    }
+
+    if (memberRow === targetRow) {
+      const rowMembers = state.formation[memberRow];
+      const memberSlot = rowMembers.indexOf(member);
+      const targetSlot = rowMembers.indexOf(target);
+      if (memberSlot < 0 || targetSlot < 0) return;
+      rowMembers[memberSlot] = target;
+      rowMembers[targetSlot] = member;
+      finishFormationSwap(member, target);
+      return;
+    }
+
+    const memberSlot = state.formation[memberRow].indexOf(member);
+    const targetSlot = state.formation[targetRow].indexOf(target);
+    if (memberSlot < 0 || targetSlot < 0) return;
+    state.formation[memberRow][memberSlot] = target;
+    state.formation[targetRow][targetSlot] = member;
+    finishFormationSwap(member, target);
+    return;
+  }
+
+  const row = memberRow || targetRow;
+  const enteringMember = memberRow ? target : member;
+  const leavingMember = memberRow ? member : target;
+  if (!canPlaceInRow(enteringMember, row)) {
+    addLog(`${enteringMember.name}は${rowLabel(row)}に配置できない。`);
+    renderFormation();
+    return;
+  }
+  if (state.inBattle && state.activeActor?.type === "party" && state.activeActor.actor === leavingMember) {
+    addLog(`${leavingMember.name}は行動中なので控えと入れ替えられない。`);
+    renderFormation();
+    return;
+  }
+  if (!replaceFormationSlot(row, leavingMember, enteringMember)) return;
+  finishFormationSwap(member, target);
+}
+
 function handleFormationDrop(memberIndex, target) {
   if (target === "bench") {
     moveMemberToBench(memberIndex);
     return;
   }
   placeFormationMember(memberIndex, target);
+}
+
+function handleFormationMemberDrop(memberIndex, targetIndex) {
+  swapFormationMembers(memberIndex, targetIndex);
+}
+
+function draggedFormationMemberIndex(event) {
+  const value = event.dataTransfer.getData("text/plain");
+  if (value === "") return -1;
+  const index = Number(value);
+  return Number.isInteger(index) ? index : -1;
+}
+
+function clearFormationDragOver() {
+  els.formationContent.querySelectorAll(".drag-over").forEach((element) => {
+    element.classList.remove("drag-over");
+  });
 }
 
 function normalizeActiveMember() {
@@ -2936,7 +3035,7 @@ function renderPartyMemberCard(member) {
         <div class="member-card-content">
           <div class="name-line">
             <span class="name-with-icon">${renderMemberSprite(member)}<span>${member.name}</span></span>
-            <span>${acted ? "済 / " : ""}Lv ${member.level} / 射程 ${attackRange(member)}</span>
+            ${renderMemberMeta(member, `${acted ? "済 / " : ""}Lv ${member.level} / 射程 ${attackRange(member)}`)}
           </div>
           <div class="member-card-body">
             <div class="member-stats">
@@ -2962,7 +3061,7 @@ function renderSubstitutionGhost(effect) {
     <div class="substitution-outgoing-ghost" aria-hidden="true">
       <div class="name-line">
         <span class="name-with-icon">${renderMemberSprite(defeated)}<span>${defeated.name}</span></span>
-        <span>HP 0</span>
+        ${renderMemberMeta(defeated, "HP 0")}
       </div>
       <div class="substitution-ghost-body">
         <div class="member-stats">
@@ -2999,10 +3098,7 @@ function renderBattle() {
   const canInstantDeath = state.inBattle && canUseInstantDeath(member);
 
   els.enemyArea.innerHTML = state.enemies.length === 0
-    ? `<div class="enemy-card town-card">
-        <div class="name-line"><span>${currentTower().name}${state.floor}階</span><span>探索中</span></div>
-        <div class="stat-line">登ると戦闘が始まる。帰るを選ぶまで、ダンジョン探索ターンは続く。</div>
-      </div>`
+    ? renderExplorationStandbyCard()
     : state.enemies.map((enemy, enemyIndex) => {
       const acted = state.inBattle && hasActedThisRound("enemy", enemy);
       return `
@@ -3029,7 +3125,8 @@ function renderBattle() {
     }).join("");
 
   if (!state.inBattle) {
-    els.commandArea.innerHTML = "";
+    renderDungeonQuickActions();
+    bindExplorationStandbyActions();
     return;
   }
 
@@ -3061,19 +3158,47 @@ function renderBattleWithEnemyRows() {
   const canInstantDeath = state.inBattle && canUseInstantDeath(member);
 
   els.enemyArea.innerHTML = state.enemies.length === 0
-    ? `<div class="enemy-card town-card">
-        <div class="name-line"><span>${currentTower().name}${state.floor}階</span><span>探索中</span></div>
-        <div class="stat-line">登ると戦闘が始まる。帰るを選ぶまで、ダンジョン探索ターンは続く。</div>
-      </div>`
+    ? renderExplorationStandbyCard()
     : renderEnemyRows(canSpell, canBowPierce, canArrowRain, canInstantDeath);
 
   if (!state.inBattle) {
-    els.commandArea.innerHTML = "";
+    renderDungeonQuickActions();
+    bindExplorationStandbyActions();
     return;
   }
 
   els.commandArea.innerHTML = "";
   bindEnemyTargetActions();
+}
+
+function renderExplorationStandbyCard() {
+  return `
+    <div class="enemy-card town-card exploration-standby-card">
+      <div class="name-line"><span>${currentTower().name}${state.floor}階</span><span>探索中</span></div>
+      <div class="stat-line">登ると戦闘が始まる。帰るを選ぶまで、ダンジョン探索ターンは続く。</div>
+    </div>
+  `;
+}
+
+function renderDungeonQuickActions() {
+  const canClimb = state.phase === "dungeon" && !state.inBattle && state.clearedFloor < TOTAL_FLOORS;
+  if (!canClimb) {
+    els.commandArea.innerHTML = "";
+    return;
+  }
+
+  els.commandArea.innerHTML = `
+    <div class="dungeon-quick-actions">
+      <button type="button" data-exploration-climb>登る</button>
+      <span>次の戦闘へ</span>
+    </div>
+  `;
+}
+
+function bindExplorationStandbyActions() {
+  document.querySelectorAll("[data-exploration-climb]").forEach((button) => {
+    button.addEventListener("click", climbDungeonFloor);
+  });
 }
 
 function renderEnemyRows(canSpell, canBowPierce, canArrowRain, canInstantDeath) {
@@ -3786,6 +3911,23 @@ function renderFormation() {
       event.dataTransfer.effectAllowed = "move";
     });
   });
+  els.formationContent.querySelectorAll("[data-drop-member]").forEach((target) => {
+    target.addEventListener("dragover", (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      event.dataTransfer.dropEffect = "move";
+      target.classList.add("drag-over");
+    });
+    target.addEventListener("dragleave", () => {
+      target.classList.remove("drag-over");
+    });
+    target.addEventListener("drop", (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      clearFormationDragOver();
+      handleFormationMemberDrop(draggedFormationMemberIndex(event), Number(target.dataset.dropMember));
+    });
+  });
   els.formationContent.querySelectorAll("[data-drop-zone]").forEach((zone) => {
     zone.addEventListener("dragover", (event) => {
       event.preventDefault();
@@ -3797,8 +3939,8 @@ function renderFormation() {
     });
     zone.addEventListener("drop", (event) => {
       event.preventDefault();
-      zone.classList.remove("drag-over");
-      handleFormationDrop(Number(event.dataTransfer.getData("text/plain")), zone.dataset.dropZone);
+      clearFormationDragOver();
+      handleFormationDrop(draggedFormationMemberIndex(event), zone.dataset.dropZone);
     });
   });
 }
@@ -3818,10 +3960,10 @@ function renderFormationMemberCard(member) {
   const memberIndex = state.members.indexOf(member);
   const active = state.inBattle && state.activeActor?.type === "party" && state.activeActor.actor === member;
   return `
-    <article class="member-card ${member.hp <= 0 ? "defeated" : ""} ${active ? "acting" : ""}" draggable="true" data-drag-member="${memberIndex}">
+    <article class="member-card ${member.hp <= 0 ? "defeated" : ""} ${active ? "acting" : ""}" draggable="true" data-drag-member="${memberIndex}" data-drop-member="${memberIndex}">
       <div class="name-line">
         <span class="name-with-icon">${renderMemberSprite(member)}<span>${member.name}</span></span>
-        <span>Lv ${member.level}</span>
+        ${renderMemberMeta(member, `Lv ${member.level}`)}
       </div>
       <div class="stat-line">HP ${member.hp}/${member.maxHp} / 射程 ${attackRange(member)}</div>
       <div class="stat-line">AP ${member.mp}/${member.maxMp}</div>
@@ -3893,7 +4035,7 @@ function renderFormationRow(member, memberIndex, zone) {
     const benchStateClass = zone === "bench" ? formationBenchStateClass(member) : "";
     const benchPositionClass = zone === "bench" ? formationBenchPositionClass(member) : "";
     return `
-      <tr class="${inParty ? "in-party" : ""} ${benchPositionClass} ${benchStateClass}" draggable="true" data-drag-member="${memberIndex}">
+      <tr class="${inParty ? "in-party" : ""} ${benchPositionClass} ${benchStateClass}" draggable="true" data-drag-member="${memberIndex}" data-drop-member="${memberIndex}">
         <td>${member.name}</td>
         <td class="formation-job-symbol">${jobShortLabel(member)}</td>
         <td>${member.hp}/${member.maxHp}</td>

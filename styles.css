@@ -442,6 +442,13 @@ button:disabled {
   color: #1d1200;
 }
 
+.member-card.acting .member-job-symbol {
+  border-color: rgba(29, 18, 0, 0.72);
+  color: #1d1200;
+  background: rgba(255, 255, 255, 0.32);
+  text-shadow: none;
+}
+
 .member-card.hit-shake,
 .enemy-card.hit-shake {
   animation: hit-shake 320ms steps(2, end);
@@ -547,6 +554,25 @@ button:disabled {
   color: var(--gold);
   font-size: 12px;
   white-space: nowrap;
+}
+
+.member-meta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.member-job-symbol {
+  min-width: 20px;
+  height: 20px;
+  display: inline-grid;
+  place-items: center;
+  border: 2px solid var(--gold);
+  color: var(--gold);
+  background: rgba(5, 9, 46, 0.72);
+  font-size: 13px;
+  line-height: 1;
+  text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.78);
 }
 
 .pixel-icon {
@@ -729,6 +755,26 @@ button:disabled {
 
 .command-area button {
   min-width: 116px;
+}
+
+.dungeon-quick-actions {
+  margin: 0 auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px;
+  border: 3px solid var(--line-soft);
+  background: rgba(5, 9, 46, 0.5);
+}
+
+.dungeon-quick-actions button {
+  min-width: 132px;
+}
+
+.dungeon-quick-actions span {
+  color: var(--muted-ink);
+  font-size: 12px;
+  white-space: nowrap;
 }
 
 .shop-buyers,
@@ -1195,6 +1241,14 @@ button:disabled {
   background: rgba(255, 240, 168, 0.12);
 }
 
+.member-card.drag-over {
+  border-color: var(--gold);
+  box-shadow:
+    inset 2px 2px 0 rgba(255, 255, 255, 0.18),
+    inset -2px -2px 0 rgba(0, 0, 0, 0.45),
+    0 0 0 3px rgba(255, 240, 168, 0.3);
+}
+
 .formation-zone {
   min-height: 180px;
   padding: 10px;
@@ -1287,6 +1341,11 @@ button:disabled {
 
 .formation-table tr:active {
   cursor: grabbing;
+}
+
+.formation-table tr.drag-over {
+  background: rgba(255, 240, 168, 0.18);
+  box-shadow: inset 0 0 0 3px var(--gold);
 }
 
 .formation-table th:nth-child(1),
