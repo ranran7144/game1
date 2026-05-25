@@ -3911,6 +3911,12 @@ function renderFormation() {
       event.dataTransfer.effectAllowed = "move";
     });
   });
+  els.formationContent.querySelectorAll("[data-bench-member]").forEach((button) => {
+    button.addEventListener("click", (event) => {
+      event.stopPropagation();
+      moveMemberToBench(Number(button.dataset.benchMember));
+    });
+  });
   els.formationContent.querySelectorAll("[data-drop-member]").forEach((target) => {
     target.addEventListener("dragover", (event) => {
       event.preventDefault();
@@ -3931,6 +3937,7 @@ function renderFormation() {
   els.formationContent.querySelectorAll("[data-drop-zone]").forEach((zone) => {
     zone.addEventListener("dragover", (event) => {
       event.preventDefault();
+      event.stopPropagation();
       event.dataTransfer.dropEffect = "move";
       zone.classList.add("drag-over");
     });
@@ -3939,6 +3946,7 @@ function renderFormation() {
     });
     zone.addEventListener("drop", (event) => {
       event.preventDefault();
+      event.stopPropagation();
       clearFormationDragOver();
       handleFormationDrop(draggedFormationMemberIndex(event), zone.dataset.dropZone);
     });
@@ -3967,6 +3975,9 @@ function renderFormationMemberCard(member) {
       </div>
       <div class="stat-line">HP ${member.hp}/${member.maxHp} / 射程 ${attackRange(member)}</div>
       <div class="stat-line">AP ${member.mp}/${member.maxMp}</div>
+      <div class="formation-card-actions">
+        <button type="button" draggable="false" data-bench-member="${memberIndex}">控えへ</button>
+      </div>
     </article>
   `;
 }
@@ -3976,6 +3987,7 @@ function renderFormationBench(members) {
   return `
     <section class="formation-zone bench-zone" data-drop-zone="bench">
       <div class="formation-zone-title">待機</div>
+      <div class="bench-drop-target" data-drop-zone="bench">ここにドロップで控えへ</div>
       <table class="formation-table">
         <thead>
           <tr>
